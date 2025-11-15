@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=19 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
+[ext_resource type="Shader" path="res://Atmosphere.gdshader" id="5_h7cuh"]
+[ext_resource type="Script" path="res://AtmosphereController.gd" id="6_6vsdv"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 
@@ -16,6 +18,35 @@ radius = 100.0
 height = 200.0
 radial_segments = 2048
 rings = 2048
+
+[sub_resource type="Gradient" id="Gradient_day"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.0235294, 0.141176, 0.294118, 1, 0.407843, 0.733333, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_day"]
+gradient = SubResource("Gradient_day")
+width = 256
+
+[sub_resource type="Gradient" id="Gradient_dusk"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.713726, 0.282353, 1, 0.85098, 0.219608, 0.117647, 1, 0.352941, 0.0666667, 0.0666667, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dusk"]
+gradient = SubResource("Gradient_dusk")
+width = 256
+
+[sub_resource type="SphereMesh" id="SphereMesh_atmosphere"]
+radius = 105.0
+height = 210.0
+radial_segments = 512
+rings = 256
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_atmosphere"]
+shader = ExtResource("5_h7cuh")
+shader_parameter/scattering_strength = 1.5
+shader_parameter/horizon_falloff = 2.5
+shader_parameter/day_ramp_texture = SubResource("GradientTexture1D_day")
+shader_parameter/dusk_ramp_texture = SubResource("GradientTexture1D_dusk")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
@@ -38,6 +69,12 @@ compositor = SubResource("Compositor_036b0")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
 material_override = ExtResource("1_f3sb7")
 mesh = SubResource("SphereMesh_tlwt5")
+
+[node name="Atmosphere" type="MeshInstance3D" parent="Planet"]
+mesh = SubResource("SphereMesh_atmosphere")
+material_override = SubResource("ShaderMaterial_atmosphere")
+script = ExtResource("6_6vsdv")
+sun_path = NodePath("../../DirectionalLight3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
 shape = SubResource("SphereShape3D_gv5m4")
