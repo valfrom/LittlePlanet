@@ -13,7 +13,7 @@ void vertex() {
 
 void fragment() {
     vec3 normal = normalize(NORMAL);
-    vec3 view_dir = normalize(CAMERA_POSITION - WORLD_POSITION);
+    vec3 view_dir = normalize(-VIEW);
     float horizon_amount = pow(1.0 - clamp(abs(dot(normal, view_dir)), 0.0, 1.0), horizon_falloff);
     float sun_wrap = pow(clamp(dot(normalize(-sun_direction), normal), 0.0, 1.0), 4.0);
     vec3 base_color = mix(zenith_color.rgb, horizon_color.rgb, horizon_amount);
