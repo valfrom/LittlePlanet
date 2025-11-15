@@ -53,6 +53,7 @@ radius = 100.0
 [node name="Sun" type="Node3D" parent="."]
 script = ExtResource("5_146yl")
 planet_path = NodePath("../Planet")
+sun_light_path = NodePath("DirectionalLight3D")
 orbit_radius = 450.0
 orbit_speed = 0.25
 initial_angle_degrees = 120.0
