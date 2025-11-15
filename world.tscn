@@ -1,15 +1,24 @@
-[gd_scene load_steps=12 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=15 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
+[ext_resource type="Script" uid="uid://d7td2u6gw2bma" path="res://SunController.gd" id="5_1olmi"]
+[ext_resource type="Shader" uid="uid://dyeib2b3g0nnb" path="res://AtmosphereSky.gdshader" id="6_ix5hc"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
+sky = SubResource("Sky_sun")
 
 [sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_aqk2v"]
 
 [sub_resource type="Compositor" id="Compositor_036b0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sunsky"]
+shader = ExtResource("6_ix5hc")
+
+[sub_resource type="Sky" id="Sky_sun"]
+sky_material = SubResource("ShaderMaterial_sunsky")
 
 [sub_resource type="SphereMesh" id="SphereMesh_tlwt5"]
 radius = 100.0
@@ -26,7 +35,16 @@ radius = 100.0
 
 [node name="World" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="Node3D" parent="." node_paths=PackedStringArray("planet_path", "world_environment_path")]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+script = ExtResource("5_1olmi")
+planet_path = NodePath("../Planet")
+world_environment_path = NodePath("../WorldEnvironment")
+rotation_speed_y = 0.02
+base_light_energy = 3.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Sun"]
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tlwt5")
