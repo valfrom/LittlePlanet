@@ -35,8 +35,8 @@ func _update_visibility() -> void:
         var lat := rad_to_deg(asin(dir.y))
         var lon := rad_to_deg(atan2(dir.x, dir.z))
 
-        var lat_ok := _is_angle_in_range(lat, latitude_visibility)
-        var lon_ok := _is_longitude_in_range(lon)
+var lat_ok: bool = _is_angle_in_range(lat, latitude_visibility)
+var lon_ok: bool = _is_longitude_in_range(lon)
         visible = lat_ok and lon_ok
 
 func _is_angle_in_range(angle: float, angle_range: Vector2) -> bool:
