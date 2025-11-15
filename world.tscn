@@ -41,20 +41,16 @@ albedo_color = Color(0.74, 0.72, 0.7, 1)
 metallic = 0.08
 roughness = 0.92
 
+[sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
+radius = 15.0
+height = 30.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_constellation"]
 shading_mode = 0
-albedo_color = Color(1, 1, 1, 1)
-emission_enabled = true
-emission = Color(0.85, 0.9, 1, 1)
-emission_energy_multiplier = 3.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_constellation_star"]
 radius = 0.3
 height = 0.6
-
-[sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
-radius = 15.0
-height = 30.0
 
 [node name="World" type="Node3D"]
 
@@ -156,7 +152,6 @@ material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarNose" type="MeshInstance3D" parent="Constellations/CatConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
@@ -239,7 +234,7 @@ material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarSerpentSpineC" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
@@ -268,7 +263,7 @@ material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarBridgeArchLeft" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.6, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
@@ -278,7 +273,7 @@ material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarBridgeArchRight" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.6, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
@@ -346,11 +341,11 @@ material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarShieldBottomLeft" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, -1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1.2, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarShieldBottomRight" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, -1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -1.2, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")

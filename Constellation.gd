@@ -44,7 +44,7 @@ func _update_visibility() -> void:
 
 	var lat_ok: bool = _is_angle_in_range(lat, latitude_visibility)
 	var lon_ok: bool = _is_longitude_in_range(lon)
-	visible = lat_ok and lon_ok
+	visible = true #lat_ok and lon_ok
 
 	var brightness: float = 0.0
 	if visible:
