@@ -46,7 +46,9 @@ func _process(delta: float) -> void:
 
     var sun_tint: Color = horizon_color.lerp(Color.WHITE, daylight)
     sun_light.light_color = sun_tint
-    sun_light.light_energy = lerp(sun_min_intensity, sun_max_intensity, daylight)
+
+    var intensity_mix: float = daylight * (1.0 - sunset)
+    sun_light.light_energy = lerp(sun_min_intensity, sun_max_intensity, intensity_mix)
 
     if _environment:
         _environment.background_color = horizon_color
