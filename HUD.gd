@@ -24,7 +24,7 @@ func _get_lat_lon_for(target: Node3D) -> Vector2:
     if target == null or planet == null:
         return Vector2.ZERO
 
-    var local_pos := planet.to_local(target.global_position)
+    var local_pos := planet.global_transform.affine_inverse().xform(target.global_transform.origin)
     if local_pos.length() == 0.0:
         return Vector2.ZERO
 
