@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
-[ext_resource type="Script" uid="uid://bgn4v6yzd2oxf" path="res://Moon.gd" id="5_l4v74"]
+[ext_resource type="Script" uid="uid://bgn4v6y0d2oxf" path="res://Moon.gd" id="5_l4v74"]
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
-[ext_resource type="Script" uid="uid://b2qlcqewkbmev" path="res://AtmosphereController.gd" id="7_28gmi"]
+[ext_resource type="Script" uid="uid://xnafrinm1vra" path="res://AtmosphereController.gd" id="7_28gmi"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 background_mode = 1
@@ -28,21 +28,21 @@ height = 208.0
 radial_segments = 1024
 rings = 1024
 
-[sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
-radius = 15.0
-height = 30.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3df6x"]
-albedo_color = Color(0.74, 0.72, 0.7, 1)
-metallic = 0.08
-roughness = 0.92
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fj7yv"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_tlwt5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3df6x"]
+albedo_color = Color(0.74, 0.72, 0.7, 1)
+metallic = 0.08
+roughness = 0.92
+
+[sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
+radius = 15.0
+height = 30.0
 
 [node name="World" type="Node3D"]
 
@@ -57,7 +57,7 @@ compositor = SubResource("Compositor_036b0")
 material_override = ExtResource("1_f3sb7")
 mesh = SubResource("SphereMesh_tlwt5")
 
-[node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "moon_light", "world_environment", "moon_mesh")]
+[node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "moon_light", "moon_mesh", "world_environment")]
 material_override = ExtResource("6_fx2th")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_qjrcu")
@@ -65,8 +65,10 @@ script = ExtResource("7_28gmi")
 player = NodePath("../../Player")
 planet = NodePath("..")
 moon_light = NodePath("../../Moon/MoonLight")
-world_environment = NodePath("../../WorldEnvironment")
 moon_mesh = NodePath("../../Moon/MeshInstance3D")
+world_environment = NodePath("../../WorldEnvironment")
+dusk_zenith_color = Color(0.3376045, 0.13036183, 0.21543393, 1)
+dusk_horizon_color = Color(0.38550982, 0.12536559, 7.219613e-08, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
 shape = SubResource("SphereShape3D_gv5m4")
@@ -106,6 +108,6 @@ mesh = SubResource("SphereMesh_67n3l")
 
 [node name="MoonLight" type="OmniLight3D" parent="Moon"]
 light_energy = 2.0
-omni_range = 400.0
 shadow_enabled = true
 shadow_bias = 0.01
+omni_range = 400.0
