@@ -1,0 +1,55 @@
+[gd_scene load_steps=11 format=3 uid="uid://cjds608jy4xuv"]
+
+[ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
+[ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
+
+[sub_resource type="Environment" id="Environment_tlwt5"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_aqk2v"]
+
+[sub_resource type="Compositor" id="Compositor_036b0"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_tlwt5"]
+radius = 100.0
+height = 200.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
+radius = 100.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fj7yv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tlwt5"]
+
+[node name="World" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tlwt5")
+camera_attributes = SubResource("CameraAttributesPhysical_aqk2v")
+compositor = SubResource("Compositor_036b0")
+
+[node name="Planet" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
+material_override = ExtResource("1_f3sb7")
+mesh = SubResource("SphereMesh_tlwt5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
+shape = SubResource("SphereShape3D_gv5m4")
+
+[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("planet_center")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 110, 0)
+script = ExtResource("2_fj7yv")
+planet_center = NodePath("../Planet")
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+script = ExtResource("3_tlwt5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_fj7yv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("CapsuleMesh_tlwt5")
