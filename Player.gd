@@ -10,9 +10,9 @@ func _get_move_input() -> Vector2:
 	var dir := Vector2.ZERO
 
 	if Input.is_action_pressed("move_forward"):
-		dir.y -= 1.0
-	if Input.is_action_pressed("move_back"):
 		dir.y += 1.0
+	if Input.is_action_pressed("move_back"):
+		dir.y -= 1.0
 	if Input.is_action_pressed("move_left"):
 		dir.x -= 1.0
 	if Input.is_action_pressed("move_right"):
@@ -32,19 +32,22 @@ func _physics_process(delta: float) -> void:
 	basis.z = -basis.x.cross(basis.y).normalized()
 	global_transform.basis = basis
 
-	velocity += -up_dir * gravity_strength * delta
+	var gravity_vec := -up_dir * gravity_strength
+	velocity += gravity_vec * delta
 
 	var input_dir := _get_move_input()
 
 	var forward := -global_transform.basis.z
-	var right := global_transform.basis.x
+	forward = (forward - up_dir * forward.dot(up_dir)).normalized()
+	var right := up_dir.cross(forward).normalized()
 
 	var move_vec := Vector3.ZERO
 	if input_dir != Vector2.ZERO:
 		move_vec = (forward * input_dir.y + right * input_dir.x).normalized() * move_speed
 
-	velocity.x = move_vec.x
-	velocity.z = move_vec.z
+	var radial := velocity.project(-up_dir)
+	var tangential := move_vec
+	velocity = tangential + radial
 
 	if is_on_floor() and Input.is_action_just_pressed("jump"):
 		velocity += up_dir * jump_speed

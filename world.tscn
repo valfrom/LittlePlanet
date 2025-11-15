@@ -13,6 +13,8 @@
 [sub_resource type="SphereMesh" id="SphereMesh_tlwt5"]
 radius = 100.0
 height = 200.0
+radial_segments = 2048
+rings = 2048
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0

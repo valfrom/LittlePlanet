@@ -15,7 +15,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			var planet_center := player.planet_center
 			if planet_center != null:
 				var up_dir := (player.global_position - planet_center.global_position).normalized()
-				var rot := Basis(up_dir, -event.relative.x * sensitivity)
+				var rot := Basis(up_dir, 	event.relative.x * sensitivity)
 				player.global_transform.basis = rot * player.global_transform.basis
 
 		pitch -= event.relative.y * sensitivity

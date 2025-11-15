@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdmhn2hjag56n"]
 
-[ext_resource type="Shader" uid="uid://bprp21fs0ha64" path="res://PlanetCurvature.gdshader" id="1_ti0y0"]
+[ext_resource type="Shader" uid="uid://osqu6p4du0b0" path="res://CurvedPlanetGrid.gdshader" id="1_ti0y0"]
 
 [resource]
 render_priority = 0
