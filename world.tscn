@@ -103,10 +103,11 @@ shape = SubResource("CapsuleShape3D_fj7yv")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 mesh = SubResource("CapsuleMesh_tlwt5")
 
-[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "planet")]
+[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "planet", "sun")]
 script = ExtResource("4_aqk2v")
 player = NodePath("../Player")
 planet = NodePath("../Planet")
+sun = NodePath("../Sun")
 
 [node name="Label" type="Label" parent="HUD"]
 offset_right = 40.0
