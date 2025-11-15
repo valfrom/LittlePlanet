@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=12 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
+[ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 
@@ -55,3 +56,12 @@ shape = SubResource("CapsuleShape3D_fj7yv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 mesh = SubResource("CapsuleMesh_tlwt5")
+
+[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "planet")]
+script = ExtResource("4_aqk2v")
+player = NodePath("../Player")
+planet = NodePath("../Planet")
+
+[node name="Label" type="Label" parent="HUD"]
+offset_right = 40.0
+offset_bottom = 23.0
