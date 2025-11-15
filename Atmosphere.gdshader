@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, cull_front, depth_draw_always, blend_add;
+render_mode unshaded, cull_front, depth_draw_never, blend_add;
 
 uniform vec4 zenith_color : source_color = vec4(0.1, 0.2, 0.6, 1.0);
 uniform vec4 horizon_color : source_color = vec4(0.8, 0.4, 0.1, 1.0);
