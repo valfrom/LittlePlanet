@@ -7,13 +7,16 @@ uniform vec3 sun_direction = vec3(0.0, 1.0, 0.0);
 uniform float horizon_falloff : hint_range(0.1, 8.0) = 1.5;
 uniform float opacity : hint_range(0.0, 1.0) = 0.8;
 
+varying vec3 world_position;
+
 void vertex() {
     VERTEX *= 1.05;
+    world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
 void fragment() {
     vec3 normal = normalize(NORMAL);
-    vec3 view_dir = normalize(CAMERA_POSITION - WORLD_POSITION);
+    vec3 view_dir = normalize(CAMERA_POSITION_WORLD - world_position);
     float horizon_amount = pow(1.0 - clamp(abs(dot(normal, view_dir)), 0.0, 1.0), horizon_falloff);
     float sun_wrap = pow(clamp(dot(normalize(-sun_direction), normal), 0.0, 1.0), 4.0);
     vec3 base_color = mix(zenith_color.rgb, horizon_color.rgb, horizon_amount);
