@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=18 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
+[ext_resource type="Script" uid="uid://bgn4v6yzd2oxf" path="res://Moon.gd" id="5_l4v74"]
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
 [ext_resource type="Script" uid="uid://b2qlcqewkbmev" path="res://AtmosphereController.gd" id="7_28gmi"]
 
@@ -26,6 +27,15 @@ radius = 104.0
 height = 208.0
 radial_segments = 1024
 rings = 1024
+
+[sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
+radius = 15.0
+height = 30.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3df6x"]
+albedo_color = Color(0.74, 0.72, 0.7, 1)
+metallic = 0.08
+roughness = 0.92
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
@@ -83,3 +93,17 @@ planet = NodePath("../Planet")
 [node name="Label" type="Label" parent="HUD"]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="Moon" type="Node3D" parent="." node_paths=PackedStringArray("planet")]
+script = ExtResource("5_l4v74")
+planet = NodePath("../Planet")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Moon"]
+material_override = SubResource("StandardMaterial3D_3df6x")
+mesh = SubResource("SphereMesh_67n3l")
+
+[node name="MoonLight" type="OmniLight3D" parent="Moon"]
+light_energy = 2.0
+omni_range = 400.0
+shadow_enabled = true
+shadow_bias = 0.01
