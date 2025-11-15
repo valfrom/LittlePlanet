@@ -28,6 +28,19 @@ height = 208.0
 radial_segments = 1024
 rings = 1024
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p82gu"]
+transparency = 1
+billboard_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.92, 0.75, 0.0)
+emission_enabled = true
+emission = Color(1, 0.92, 0.75, 1)
+emission_energy = 6.0
+disable_receive_shadows = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_me2lw"]
+size = Vector2(120, 120)
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
 
@@ -42,6 +55,11 @@ script = ExtResource("5_146yl")
 planet = NodePath("../Planet")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Sun"]
+
+[node name="SunBillboard" type="MeshInstance3D" parent="Sun"]
+material_override = SubResource("StandardMaterial3D_p82gu")
+mesh = SubResource("QuadMesh_me2lw")
+cast_shadow = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tlwt5")
