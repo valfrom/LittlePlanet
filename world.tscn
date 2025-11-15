@@ -1,12 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=15 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
-[ext_resource type="Script" path="res://SunController.gd" id="5_146yl"]
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
-[ext_resource type="Script" path="res://AtmosphereController.gd" id="7_28gmi"]
+[ext_resource type="Script" uid="uid://b2qlcqewkbmev" path="res://AtmosphereController.gd" id="7_28gmi"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 background_mode = 1
@@ -28,19 +27,6 @@ height = 208.0
 radial_segments = 1024
 rings = 1024
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p82gu"]
-transparency = 1
-billboard_mode = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 0.92, 0.75, 1)
-emission_enabled = true
-emission = Color(1, 0.92, 0.75, 1)
-emission_energy = 6.0
-disable_receive_shadows = true
-
-[sub_resource type="QuadMesh" id="QuadMesh_me2lw"]
-size = Vector2(120, 120)
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
 
@@ -49,17 +35,6 @@ radius = 100.0
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_tlwt5"]
 
 [node name="World" type="Node3D"]
-
-[node name="Sun" type="Node3D" parent="."]
-script = ExtResource("5_146yl")
-planet = NodePath("../Planet")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Sun"]
-
-[node name="SunBillboard" type="MeshInstance3D" parent="Sun"]
-material_override = SubResource("StandardMaterial3D_p82gu")
-mesh = SubResource("QuadMesh_me2lw")
-cast_shadow = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tlwt5")
@@ -74,12 +49,12 @@ mesh = SubResource("SphereMesh_tlwt5")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "sun_light", "world_environment")]
 material_override = ExtResource("6_fx2th")
-mesh = SubResource("SphereMesh_qjrcu")
 cast_shadow = 0
+mesh = SubResource("SphereMesh_qjrcu")
 script = ExtResource("7_28gmi")
 player = NodePath("../../Player")
 planet = NodePath("..")
-sun_light = NodePath("../../Sun/DirectionalLight3D")
+sun_light = NodePath("")
 world_environment = NodePath("../../WorldEnvironment")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
