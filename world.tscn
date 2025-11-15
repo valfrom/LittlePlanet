@@ -126,13 +126,14 @@ omni_range = 400.0
 
 [node name="Constellations" type="Node3D" parent="."]
 
-[node name="CatConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet")]
+[node name="CatConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 380, -420)
 script = ExtResource("8_26mqm")
 player = NodePath("../../Player")
 planet = NodePath("../../Planet")
-latitude_visibility = Vector2(25, 90)
-longitude_visibility = Vector2(-60, 120)
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(35, 90)
+longitude_visibility = Vector2(-180, 0)
 
 [node name="StarEarLeft" type="MeshInstance3D" parent="Constellations/CatConstellation"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.4, 0)
@@ -174,13 +175,126 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, -0.4, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
 
-[node name="NavigatorConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet")]
+[node name="NorthernCrownConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 260, 420, -160)
+script = ExtResource("8_26mqm")
+player = NodePath("../../Player")
+planet = NodePath("../../Planet")
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(35, 90)
+longitude_visibility = Vector2(0, 180)
+
+[node name="StarCrownCenter" type="MeshInstance3D" parent="Constellations/NorthernCrownConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarCrownLeft" type="MeshInstance3D" parent="Constellations/NorthernCrownConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarCrownRight" type="MeshInstance3D" parent="Constellations/NorthernCrownConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarCrownBaseLeft" type="MeshInstance3D" parent="Constellations/NorthernCrownConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, -1.4, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarCrownBaseRight" type="MeshInstance3D" parent="Constellations/NorthernCrownConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, -1.4, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="EquatorSerpentConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 420, 280, 220)
+script = ExtResource("8_26mqm")
+player = NodePath("../../Player")
+planet = NodePath("../../Planet")
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(-25, 35)
+longitude_visibility = Vector2(-180, 0)
+
+[node name="StarSerpentHead" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarSerpentJaw" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, -0.4, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarSerpentSpineA" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarSerpentSpineB" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.8, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarSerpentSpineC" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarSerpentTail" type="MeshInstance3D" parent="Constellations/EquatorSerpentConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, -0.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="EquatorBridgeConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 80, 300, 400)
+script = ExtResource("8_26mqm")
+player = NodePath("../../Player")
+planet = NodePath("../../Planet")
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(-25, 35)
+longitude_visibility = Vector2(0, 180)
+
+[node name="StarBridgePierLeft" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, -0.8, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarBridgePierRight" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.8, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarBridgeArchLeft" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, 0.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarBridgeArchMid" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarBridgeArchRight" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.6, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarBridgeLight" type="MeshInstance3D" parent="Constellations/EquatorBridgeConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="NavigatorConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -260, 360, 260)
 script = ExtResource("8_26mqm")
 player = NodePath("../../Player")
 planet = NodePath("../../Planet")
-latitude_visibility = Vector2(-70, -15)
-longitude_visibility = Vector2(150, -150)
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(-90, -25)
+longitude_visibility = Vector2(-180, 0)
 
 [node name="StarArrowTip" type="MeshInstance3D" parent="Constellations/NavigatorConstellation"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
@@ -204,5 +318,39 @@ mesh = SubResource("SphereMesh_constellation_star")
 
 [node name="StarArrowBaseRight" type="MeshInstance3D" parent="Constellations/NavigatorConstellation"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, -1.4, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="SouthernShieldConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -300, 220, -420)
+script = ExtResource("8_26mqm")
+player = NodePath("../../Player")
+planet = NodePath("../../Planet")
+sun_light = NodePath("../../Moon/MoonLight")
+latitude_visibility = Vector2(-90, -25)
+longitude_visibility = Vector2(0, 180)
+
+[node name="StarShieldTop" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarShieldLeft" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarShieldRight" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarShieldBottomLeft" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, -1.2, 0)
+material_override = SubResource("StandardMaterial3D_constellation")
+mesh = SubResource("SphereMesh_constellation_star")
+
+[node name="StarShieldBottomRight" type="MeshInstance3D" parent="Constellations/SouthernShieldConstellation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, -1.2, 0)
 material_override = SubResource("StandardMaterial3D_constellation")
 mesh = SubResource("SphereMesh_constellation_star")
