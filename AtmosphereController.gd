@@ -27,24 +27,24 @@ func _process(delta: float) -> void:
     if player == null or planet == null or sun_light == null or _material == null:
         return
 
-    var up_dir := (player.global_position - planet.global_position).normalized()
-    var sun_dir := -sun_light.global_transform.basis.z
-    var elevation := clamp(sun_dir.dot(up_dir), -1.0, 1.0)
+    var up_dir: Vector3 = (player.global_position - planet.global_position).normalized()
+    var sun_dir: Vector3 = -sun_light.global_transform.basis.z
+    var elevation: float = clamp(sun_dir.dot(up_dir), -1.0, 1.0)
 
-    var daylight := clamp((elevation + 0.1) / 0.9, 0.0, 1.0)
-    var sunset := clamp(1.0 - abs(elevation) / 0.55, 0.0, 1.0)
+    var daylight: float = clamp((elevation + 0.1) / 0.9, 0.0, 1.0)
+    var sunset: float = clamp(1.0 - abs(elevation) / 0.55, 0.0, 1.0)
 
-    var zenith_color := night_zenith_color.lerp(day_zenith_color, daylight)
+    var zenith_color: Color = night_zenith_color.lerp(day_zenith_color, daylight)
     zenith_color = zenith_color.lerp(dusk_zenith_color, sunset)
 
-    var horizon_color := night_horizon_color.lerp(day_horizon_color, daylight)
+    var horizon_color: Color = night_horizon_color.lerp(day_horizon_color, daylight)
     horizon_color = horizon_color.lerp(dusk_horizon_color, sunset)
 
     _material.set_shader_parameter("sun_direction", sun_dir)
     _material.set_shader_parameter("zenith_color", zenith_color)
     _material.set_shader_parameter("horizon_color", horizon_color)
 
-    var sun_tint := horizon_color.lerp(Color.WHITE, daylight)
+    var sun_tint: Color = horizon_color.lerp(Color.WHITE, daylight)
     sun_light.light_color = sun_tint
     sun_light.light_energy = lerp(sun_min_intensity, sun_max_intensity, daylight)
 
