@@ -57,15 +57,16 @@ compositor = SubResource("Compositor_036b0")
 material_override = ExtResource("1_f3sb7")
 mesh = SubResource("SphereMesh_tlwt5")
 
-[node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "sun_light", "world_environment")]
+[node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "moon_light", "world_environment", "moon_mesh")]
 material_override = ExtResource("6_fx2th")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_qjrcu")
 script = ExtResource("7_28gmi")
 player = NodePath("../../Player")
 planet = NodePath("..")
-sun_light = NodePath("")
+moon_light = NodePath("../../Moon/MoonLight")
 world_environment = NodePath("../../WorldEnvironment")
+moon_mesh = NodePath("../../Moon/MeshInstance3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
 shape = SubResource("SphereShape3D_gv5m4")
