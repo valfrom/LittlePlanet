@@ -26,7 +26,7 @@ func _ready() -> void:
     _apply_settings()
 
 func _notification(what: int) -> void:
-    if what == Node.NOTIFICATION_EDITOR_PROPERTY_CHANGED:
+    if what == NOTIFICATION_EDITOR_PROPERTY_CHANGED:
         _schedule_update()
 
 func _schedule_update() -> void:
