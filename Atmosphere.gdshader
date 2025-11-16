@@ -126,7 +126,9 @@ void fragment() {
     base_color *= vignette * horizon_brightness;
 
     vec3 star_color = get_stars(UV);
-    vec3 color = base_color + (star_color - background_color) * star_contribution;
+    float star_threshold = clamp(horizon_height + horizon_softness, 0.0, 1.0);
+    float star_mask = smoothstep(star_threshold, 1.0, st.y);
+    vec3 color = base_color + star_mask * (star_color - background_color) * star_contribution;
 
     ALBEDO = vec3(0.0);
     EMISSION = color;
