@@ -1,8 +1,8 @@
-[gd_scene load_steps=21 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=19 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
-[ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
-[ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
+[ext_resource type="Script" uid="uid://6psijwnfi2pf" path="res://World.gd" id="1_pkg7o"]
+[ext_resource type="PackedScene" uid="uid://cs1k22tdf04k4" path="res://player/player.tscn" id="2_gbfbk"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
 [ext_resource type="Script" uid="uid://bgn4v6y0d2oxf" path="res://Moon.gd" id="5_l4v74"]
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
@@ -32,10 +32,6 @@ rings = 1024
 [sub_resource type="SphereShape3D" id="SphereShape3D_gv5m4"]
 radius = 100.0
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fj7yv"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_tlwt5"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3df6x"]
 albedo_color = Color(0.74, 0.72, 0.7, 1)
 metallic = 0.08
@@ -52,7 +48,10 @@ shading_mode = 0
 radius = 0.3
 height = 0.6
 
-[node name="World" type="Node3D"]
+[node name="World" type="Node3D" node_paths=PackedStringArray("planet")]
+script = ExtResource("1_pkg7o")
+player_scene = ExtResource("2_gbfbk")
+planet = NodePath("Planet")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tlwt5")
@@ -70,7 +69,7 @@ material_override = ExtResource("6_fx2th")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_qjrcu")
 script = ExtResource("7_28gmi")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("..")
 moon_light = NodePath("../../Moon/MoonLight")
 moon_mesh = NodePath("../../Moon/MeshInstance3D")
@@ -81,24 +80,9 @@ dusk_horizon_color = Color(0.38550982, 0.12536559, 7.219613e-08, 1)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
 shape = SubResource("SphereShape3D_gv5m4")
 
-[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("planet_center")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 110, 0)
-script = ExtResource("2_fj7yv")
-planet_center = NodePath("../Planet")
-
-[node name="Camera3D" type="Camera3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
-script = ExtResource("3_tlwt5")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-shape = SubResource("CapsuleShape3D_fj7yv")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
-mesh = SubResource("CapsuleMesh_tlwt5")
-
 [node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "planet", "moon")]
 script = ExtResource("4_aqk2v")
-player = NodePath("../Player")
+player = NodePath("")
 planet = NodePath("../Planet")
 moon = NodePath("../Moon")
 
@@ -125,7 +109,7 @@ omni_range = 400.0
 [node name="CatConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 380, -420)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(35, 90)
@@ -173,7 +157,7 @@ mesh = SubResource("SphereMesh_constellation_star")
 [node name="NorthernCrownConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 260, 420, -160)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(35, 90)
@@ -207,7 +191,7 @@ mesh = SubResource("SphereMesh_constellation_star")
 [node name="EquatorSerpentConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 420, 280, 220)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(-25, 35)
@@ -246,7 +230,7 @@ mesh = SubResource("SphereMesh_constellation_star")
 [node name="EquatorBridgeConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 80, 300, 400)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(-25, 35)
@@ -285,7 +269,7 @@ mesh = SubResource("SphereMesh_constellation_star")
 [node name="NavigatorConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -260, 360, 260)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(-90, -25)
@@ -319,7 +303,7 @@ mesh = SubResource("SphereMesh_constellation_star")
 [node name="SouthernShieldConstellation" type="Node3D" parent="Constellations" node_paths=PackedStringArray("player", "planet", "sun_light")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -300, 220, -420)
 script = ExtResource("8_26mqm")
-player = NodePath("../../Player")
+player = NodePath("")
 planet = NodePath("../../Planet")
 sun_light = NodePath("../../Moon/MoonLight")
 latitude_visibility = Vector2(-90, -25)
