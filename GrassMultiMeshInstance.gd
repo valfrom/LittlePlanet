@@ -89,10 +89,10 @@ func _rebuild_multimesh() -> void:
                 multimesh.set_instance_custom_data(index, Color(color_variation, bend_variation, phase, unused))
 
 func _random_unit_vector(rng: RandomNumberGenerator) -> Vector3:
-	var u := rng.randf_range(-1.0, 1.0)
-	var angle := rng.randf() * TAU
-	var radius := sqrt(max(0.0, 1.0 - u * u))
-	return Vector3(cos(angle) * radius, u, sin(angle) * radius)
+        var u := rng.randf_range(-1.0, 1.0)
+        var angle := rng.randf() * TAU
+        var radius := sqrt(max(0.0, 1.0 - u * u))
+        return Vector3(cos(angle) * radius, u, sin(angle) * radius)
 
 func _basis_from_normal(normal: Vector3) -> Basis:
         var tangent := normal.cross(Vector3.UP)
