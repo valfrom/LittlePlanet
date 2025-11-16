@@ -37,6 +37,22 @@ float noise(vec2 p)
     return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
+float fbm(vec2 p)
+{
+    float total = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+
+    for (int i = 0; i < 3; i++)
+    {
+        total += noise(p * frequency) * amplitude;
+        frequency *= 2.13;
+        amplitude *= 0.5;
+    }
+
+    return total;
+}
+
 void vertex()
 {
     vec3 pos = VERTEX;
@@ -57,22 +73,6 @@ void vertex()
 
     VERTEX = pos;
     world_pos = VERTEX;
-}
-
-float fbm(vec2 p)
-{
-    float total = 0.0;
-    float amplitude = 0.5;
-    float frequency = 1.0;
-
-    for (int i = 0; i < 3; i++)
-    {
-        total += noise(p * frequency) * amplitude;
-        frequency *= 2.13;
-        amplitude *= 0.5;
-    }
-
-    return total;
 }
 
 void fragment()
