@@ -70,7 +70,7 @@ mesh = SubResource("SphereMesh_tlwt5")
 [node name="Grass" type="MultiMeshInstance3D" parent="Planet" node_paths=PackedStringArray("planet", "observer")]
 script = ExtResource("10_f536a")
 planet = NodePath("..")
-observer = NodePath("../Player/Camera3D")
+observer = NodePath("../../Player/Camera3D")
 tuft_mesh = ExtResource("9_uleg6")
 planet_radius = 100.0
 density = 6000

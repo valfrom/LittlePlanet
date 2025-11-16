@@ -6,7 +6,7 @@ extends MultiMeshInstance3D
 @export_range(0, 20000, 1) var density: int = 4000 : set = _set_density
 @export_range(0.0, 1.0, 0.01) var polar_cap: float = 0.0 : set = _set_polar_cap
 @export_range(0, 1000000, 1) var seed: int = 12345 : set = _set_seed
-@export var scale_range := Vector2(0.65, 1.35) : set = _set_scale_range
+@export var scale_range: Vector2 = Vector2(0.65, 1.35) : set = _set_scale_range
 @export_range(0.0, 500.0, 0.1) var cull_distance: float = 260.0
 @export var observer: Node3D
 @export var tuft_mesh: Mesh = preload("res://meshes/GrassTuft.tres") : set = _set_tuft_mesh
@@ -15,6 +15,7 @@ var _needs_population := false
 var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
+    set_process(true)
     if not Engine.is_editor_hint():
         _populate_if_needed()
     else:
@@ -73,21 +74,21 @@ func _populate() -> void:
     if multimesh == null:
         multimesh = MultiMesh.new()
     multimesh.transform_format = MultiMesh.TRANSFORM_3D
-    multimesh.color_format = MultiMesh.COLOR_NONE
-    multimesh.custom_data_format = MultiMesh.CUSTOM_DATA_FLOAT
+    multimesh.use_colors = false
+    multimesh.use_custom_data = true
     multimesh.mesh = tuft_mesh
 
-    var instance_total := max(density, 0)
+    var instance_total: int = max(density, 0)
     multimesh.instance_count = instance_total
     if instance_total == 0:
         return
 
     _rng.seed = seed
-    var center := planet.global_position if planet else Vector3.ZERO
+    var center: Vector3 = planet.global_position if planet else Vector3.ZERO
 
-    for i in instance_total:
+    for i in range(instance_total):
         var normal := _random_normal()
-        var polar_limit := polar_cap
+        var polar_limit: float = polar_cap
         if polar_limit > 0.0:
             while abs(normal.y) > (1.0 - polar_limit):
                 normal = _random_normal()
@@ -98,7 +99,13 @@ func _populate() -> void:
         basis = basis.scaled(Vector3(uniform_scale, uniform_scale, uniform_scale))
         var transform := Transform3D(basis, position)
         multimesh.set_instance_transform(i, transform)
-        multimesh.set_instance_custom_data(i, Color(_rng.randf(), _rng.randf(), _rng.randf(), _rng.randf()))
+
+        var sway_phase := _rng.randf()
+        var tint := _rng.randf()
+        var sway_angle := _rng.randf_range(0.0, TAU)
+        var sway_dir := Vector2(cos(sway_angle), sin(sway_angle))
+        var custom_data := Color(sway_phase, tint, sway_dir.x * 0.5 + 0.5, sway_dir.y * 0.5 + 0.5)
+        multimesh.set_instance_custom_data(i, custom_data)
     multimesh.visible_instance_count = instance_total
 
 func _random_normal() -> Vector3:
