@@ -1,6 +1,5 @@
-[gd_scene load_steps=21 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=24 format=3 uid="uid://cjds608jy4xuv"]
 
-[ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://cgf2d738d1fss" path="res://OrbitCamera.gd" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://du64yerbgjgaa" path="res://HUD.gd" id="4_aqk2v"]
@@ -8,6 +7,9 @@
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
 [ext_resource type="Script" uid="uid://xnafrinm1vra" path="res://AtmosphereController.gd" id="7_28gmi"]
 [ext_resource type="Script" uid="uid://dw6crtvryu3dy" path="res://Constellation.gd" id="8_26mqm"]
+[ext_resource type="Mesh" path="res://meshes/GrassBladeMesh.tres" id="9_c4k0a"]
+[ext_resource type="ShaderMaterial" path="res://materials/GrassWindMaterial.tres" id="10_lcy5w"]
+[ext_resource type="Script" path="res://GrassMultiMeshInstance.gd" id="11_1d1ex"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 background_mode = 1
@@ -41,6 +43,10 @@ albedo_color = Color(0.74, 0.72, 0.7, 1)
 metallic = 0.08
 roughness = 0.92
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_soil"]
+albedo_color = Color(0.262745, 0.176471, 0.0901961, 1)
+roughness = 1.0
+
 [sub_resource type="SphereMesh" id="SphereMesh_67n3l"]
 radius = 15.0
 height = 30.0
@@ -62,8 +68,28 @@ compositor = SubResource("Compositor_036b0")
 [node name="Planet" type="StaticBody3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
-material_override = ExtResource("1_f3sb7")
+material_override = SubResource("StandardMaterial3D_soil")
 mesh = SubResource("SphereMesh_tlwt5")
+
+[node name="Grass" type="MultiMeshInstance3D" parent="Planet"]
+script = ExtResource("11_1d1ex")
+instance_count = 9000
+surface_offset = 0.25
+random_seed = 42
+min_width_scale = 0.6
+max_width_scale = 1.4
+min_height_scale = 0.8
+max_height_scale = 1.6
+blade_mesh = ExtResource("9_c4k0a")
+grass_material = ExtResource("10_lcy5w")
+wind_speed = 1.6
+wind_direction = Vector3(0.5, 0.0, 0.3)
+bend_strength = 0.45
+top_color = Color(0.176471, 0.670588, 0.286275, 1)
+bottom_color = Color(0.262745, 0.176471, 0.0901961, 1)
+soil_height = 0.22
+color_variation_strength = 0.22
+bend_variation_strength = 0.3
 
 [node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "moon_light", "moon_mesh", "world_environment")]
 material_override = ExtResource("6_fx2th")

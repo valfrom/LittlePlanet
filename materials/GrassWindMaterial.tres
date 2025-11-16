@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/GrassWind.gdshader" id="1_1nhsm"]
+
+[resource]
+shader = ExtResource("1_1nhsm")
+shader_parameter/wind_direction = Vector3(0.8, 0.0, 0.4)
+shader_parameter/wind_speed = 1.2
+shader_parameter/bend_strength = 0.4
+shader_parameter/soil_height = 0.2
+shader_parameter/top_color = Color(0.196078, 0.721569, 0.286275, 1)
+shader_parameter/bottom_color = Color(0.278431, 0.188235, 0.0745098, 1)
+shader_parameter/color_variation_strength = 0.18
+shader_parameter/bend_variation_strength = 0.2
