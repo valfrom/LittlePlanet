@@ -46,11 +46,15 @@ var motion := Vector2()
 
 
 func _ready() -> void:
-	# Pre-initialize orientation transform.
-	orientation = player_model.global_transform
-	orientation.origin = Vector3()
-	if not multiplayer.is_server():
-		set_process(false)
+        # Pre-initialize orientation transform.
+        orientation = player_model.global_transform
+        orientation.origin = Vector3()
+        if planet == null:
+                planet = _find_planet_node()
+                if planet == null:
+                        push_warning("Player has no planet assigned. Falling back to default gravity.")
+        if not multiplayer.is_server():
+                set_process(false)
 
 
 func _physics_process(delta: float) -> void:
@@ -164,21 +168,20 @@ func apply_input(delta: float) -> void:
         velocity.x = h_velocity.x
         velocity.z = h_velocity.z
 
-	var gravity_direction: Vector3 = Vector3.DOWN
-	var gravity_magnitude: float = gravity_strength
-	if planet:
-		var toward_planet: Vector3 = planet.global_position - global_position
-		var distance_sq: float = toward_planet.length_squared()
-		if distance_sq > 0.0:
-			gravity_direction = toward_planet / sqrt(distance_sq)
-	else:
-		var default_gravity: Vector3 = get_gravity()
-		var default_length: float = default_gravity.length()
-		if default_length > 0.0:
-			gravity_direction = default_gravity / default_length
-			gravity_magnitude = default_length
-	velocity += gravity_direction * gravity_magnitude * delta
-	set_up_direction(-gravity_direction)
+        var gravity_dir: Vector3 = Vector3.DOWN
+        var gravity_force: float = gravity_strength
+        if planet:
+                var toward_planet: Vector3 = planet.global_position - global_position
+                var distance_sq: float = toward_planet.length_squared()
+                if distance_sq > 0.0:
+                        gravity_dir = toward_planet / sqrt(distance_sq)
+        else:
+                var default_gravity: Vector3 = get_gravity()
+                gravity_force = default_gravity.length()
+                if gravity_force > 0.0:
+                        gravity_dir = default_gravity / gravity_force
+        velocity += gravity_dir * gravity_force * delta
+        set_up_direction(-gravity_dir)
 
         set_velocity(velocity)
         move_and_slide()
@@ -189,8 +192,17 @@ func apply_input(delta: float) -> void:
 	player_model.global_transform.basis = orientation.basis
 
 	# If we're below -40, respawn (teleport to the initial position).
-	if transform.origin.y < -40.0:
-		transform.origin = initial_position
+        if transform.origin.y < -40.0:
+                transform.origin = initial_position
+
+
+func _find_planet_node() -> Node3D:
+	var current_scene := get_tree().current_scene
+	if current_scene:
+		var candidate := current_scene.find_child("Planet", true, false)
+		if candidate is Node3D:
+			return candidate
+	return null
 
 
 @rpc("call_local")
