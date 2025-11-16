@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cih3rh86yrakm"]
+
+[ext_resource type="Shader" path="res://StylizedGrass.gdshader" id="1_d5htg"]
+
+[resource]
+shader = ExtResource("1_d5htg")
+shader_parameter/top_color = Color(0.51, 0.88, 0.44, 1)
+shader_parameter/bottom_color = Color(0.08, 0.2, 0.08, 1)
+shader_parameter/blade_height = 1.1
+shader_parameter/blade_curvature = 0.55
+shader_parameter/wind_strength = 0.35
+shader_parameter/wind_speed = 1.1
+shader_parameter/wind_direction = Vector2(0.6, 0.4)
+shader_parameter/width_softness = 0.18
+shader_parameter/tip_brightness = 1.3
