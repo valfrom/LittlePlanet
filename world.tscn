@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=22 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
@@ -8,6 +8,7 @@
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
 [ext_resource type="Script" uid="uid://xnafrinm1vra" path="res://AtmosphereController.gd" id="7_28gmi"]
 [ext_resource type="Script" uid="uid://dw6crtvryu3dy" path="res://Constellation.gd" id="8_26mqm"]
+[ext_resource type="PackedScene" uid="uid://b5gervcbw2w0e" path="res://Blast.tscn" id="9_fem5v"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 background_mode = 1
@@ -85,15 +86,20 @@ shape = SubResource("SphereShape3D_gv5m4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 110, 0)
 script = ExtResource("2_fj7yv")
 planet_center = NodePath("../Planet")
+blast_scene = ExtResource("9_fem5v")
 
 [node name="Camera3D" type="Camera3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 script = ExtResource("3_tlwt5")
+
+[node name="Muzzle" type="Marker3D" parent="Player/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.8)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_fj7yv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+visible = false
 mesh = SubResource("CapsuleMesh_tlwt5")
 
 [node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "planet", "moon")]

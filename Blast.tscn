@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5gervcbw2w0e"]
+
+[ext_resource type="Script" path="res://Blast.gd" id="1_dudp8"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_kgj8b"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3mjj"]
+albedo_color = Color(1, 0.74902, 0.211765, 1)
+emission_enabled = true
+emission = Color(4, 2, 0.4, 1)
+emission_energy_multiplier = 1.5
+roughness = 0.15
+
+[node name="Blast" type="Node3D"]
+script = ExtResource("1_dudp8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_kgj8b")
+material_override = SubResource("StandardMaterial3D_d3mjj")
