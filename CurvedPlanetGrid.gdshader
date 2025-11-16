@@ -71,7 +71,8 @@ float fbm(vec2 p)
 
 vec3 apply_curvature(vec3 pos)
 {
-    vec2 fl = pos.xz - CAMERA_POSITION_WORLD.xz;
+    vec3 camera_pos = (INV_VIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+    vec2 fl = pos.xz - camera_pos.xz;
     float d = length(fl);
     pos.y -= curvature * d * d;
     return pos;
