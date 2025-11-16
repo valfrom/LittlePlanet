@@ -41,6 +41,8 @@ var motion := Vector2()
 		$InputSynchronizer.set_multiplayer_authority(value)
 
 @export var current_animation := Animations.WALK
+@export var planet: Node3D
+@export var gravity_strength: float = ProjectSettings.get_setting("physics/3d/default_gravity") as float
 
 
 func _ready() -> void:
@@ -159,12 +161,19 @@ func apply_input(delta: float) -> void:
 	orientation *= root_motion
 
 	var h_velocity: Vector3 = orientation.origin / delta
-	velocity.x = h_velocity.x
-	velocity.z = h_velocity.z
-	velocity += get_gravity() * delta
-	set_velocity(velocity)
-	set_up_direction(Vector3.UP)
-	move_and_slide()
+        velocity.x = h_velocity.x
+        velocity.z = h_velocity.z
+
+        if planet:
+                var gravity_dir: Vector3 = (planet.global_position - global_position).normalized()
+                velocity += gravity_dir * gravity_strength * delta
+                set_up_direction(-gravity_dir)
+        else:
+                velocity += get_gravity() * delta
+                set_up_direction(Vector3.UP)
+
+        set_velocity(velocity)
+        move_and_slide()
 
 	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
 	orientation = orientation.orthonormalized() # Orthonormalize orientation.
