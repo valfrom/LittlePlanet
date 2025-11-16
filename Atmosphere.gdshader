@@ -1,37 +1,134 @@
 shader_type spatial;
-render_mode unshaded, cull_front, depth_draw_always, blend_add;
+render_mode depth_prepass_alpha;
+render_mode diffuse_toon;
+render_mode specular_toon;
 
-uniform vec4 zenith_color : source_color = vec4(0.1, 0.2, 0.6, 1.0);
-uniform vec4 horizon_color : source_color = vec4(0.8, 0.4, 0.1, 1.0);
+// Atmosphere controls
+uniform vec3 zenith_color : source_color = vec3(0.02, 0.04, 0.12);
+uniform vec3 horizon_color : source_color = vec3(0.15, 0.25, 0.40);
 uniform vec3 sun_direction = vec3(0.0, 1.0, 0.0);
-uniform float horizon_falloff : hint_range(0.1, 8.0) = 1.5;
-uniform float opacity : hint_range(0.0, 1.0) = 0.8;
-uniform float star_intensity : hint_range(0.0, 5.0) = 0.6;
-uniform float star_density : hint_range(0.0, 1.0) = 0.035;
+uniform float horizon_height : hint_range(0.0, 1.0, 0.001) = 0.45;
+uniform float horizon_softness : hint_range(0.01, 1.0, 0.001) = 0.25;
+uniform float horizon_brightness : hint_range(0.0, 2.0, 0.001) = 1.0;
+uniform float vignette_strength : hint_range(0.0, 1.0, 0.001) = 0.35;
+uniform float star_contribution : hint_range(0.0, 1.0, 0.001) = 1.0;
 
-varying vec3 world_position;
+// Starfield controls
+uniform vec3 background_color : source_color = vec3(0.02, 0.04, 0.12);
+uniform float aspect_ratio = 1.0;
+uniform float density : hint_range(0.0, 3.0, 0.0001) = 1.3;
+uniform int layer_parascale : hint_range(0, 5, 1) = 4;
+uniform vec2 star_speed = vec2(0.0);
+uniform vec2 star_wave = vec2(0.0);
+uniform float star_size : hint_range(0.0, 100.0, 0.01) = 3.0;
+uniform float star_rotate_speed : hint_range(-3.0, 3.0) = 0.5;
+uniform float twinkle_effect : hint_range(0.0, 1.0, 0.01) = 0.6;
+uniform float twinkle_speed : hint_range(0.0, 100.0, 0.01) = 0.3;
+uniform bool pixelate_enabled = false;
+uniform float pixelate_count = 1000.0;
 
-void vertex() {
-    VERTEX *= 1.05;
-    world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+float one_div_x(float x) {
+    return (abs(x) < 0.0001) ? 1.0 : (1.0 / x);
+}
+
+float one_div_x2(float x) {
+    return one_div_x(x) * one_div_x(x);
+}
+
+float get_beta_w(float x, float f, float size) {
+    return size * x * PI / f;
+}
+
+float get_beta_h(float y, float f, float size) {
+    return size * y * PI / f;
+}
+
+float get_i(vec2 uv, float f, vec2 SIZE) {
+    return one_div_x2(get_beta_w(uv.x, f, SIZE.x)) * one_div_x2(get_beta_h(uv.y, f, SIZE.y));
+}
+
+float random(vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43759.5453123);
+}
+
+vec2 get_snowflake_world_center(vec2 grid_id, vec2 time_offset, vec2 snow_offset, float layer_scale) {
+    return (grid_id + snow_offset + time_offset) / layer_scale;
+}
+
+vec2 rotate(vec2 uv, float add_theta) {
+    float theta = atan(uv.y, uv.x) + add_theta;
+    float r = length(uv);
+    return vec2(r * cos(theta), r * sin(theta));
+}
+
+vec3 get_stars(vec2 uv) {
+    vec2 st = uv;
+    if (pixelate_enabled) {
+        st = round(st * pixelate_count) / pixelate_count;
+    }
+    st.x *= aspect_ratio;
+    vec2 cuv = (st - 0.5) * 2.0;
+
+    vec3 star_color = background_color;
+
+    for (int layer = 0; layer < layer_parascale; layer++) {
+        float layer_scale = exp(float(layer + 1) * density);
+        vec2 layer_speed = vec2(star_speed.x, star_speed.y) * (1.0 + float(layer) * 0.3);
+        float layer_size = star_size * (1.0 - float(layer) * 0.2);
+
+        vec2 layer_st = st * layer_scale;
+        vec2 cuv_st = cuv;
+
+        vec2 time_offset = TIME * layer_speed;
+        layer_st -= time_offset;
+
+        vec2 grid_st = fract(layer_st);
+        vec2 grid_id = floor(layer_st);
+
+        float rand_seed = random(grid_id);
+
+        vec2 snow_pos = vec2(
+            0.5 + (0.3 * sin((rand_seed * 6.28) + (TIME * star_wave.x))),
+            0.5 + (0.2 * cos((rand_seed * 12.56) + (TIME * star_wave.y)))
+        );
+
+        float dist = distance(grid_st, snow_pos);
+        float snow_size = layer_size * 0.01 * (0.5 + 0.5 * rand_seed);
+        float brightness = 1.0 - (float(layer) * 0.3);
+
+        float m = exp((-dist * dist) / (snow_size * snow_size));
+
+        vec2 fst = cuv_st - (get_snowflake_world_center(grid_id, time_offset, snow_pos, layer_scale) - 0.5) * 2.0;
+        fst = rotate(fst, TIME * star_rotate_speed);
+
+        float snowflake = m * 0.5 * (get_i(fst, 0.8 - (dist * 42.0), vec2(1.0 / snow_size)) + 1.0);
+
+        float twinkle = (1.0 - twinkle_effect) + twinkle_effect * (sin(rand_seed * 100.0 + TIME * twinkle_speed) * cos(rand_seed * 120.0 + TIME * (twinkle_speed + 2.0)));
+        snowflake *= twinkle;
+
+        vec3 color_type = vec3(random(grid_id - 3.0), random(grid_id + 7.0), random(grid_id + 5.0));
+
+        star_color = max(star_color + (snowflake * brightness) * color_type, star_color);
+    }
+
+    return star_color;
 }
 
 void fragment() {
-    vec3 normal = normalize(NORMAL);
-    vec3 view_dir = normalize(CAMERA_POSITION_WORLD - world_position);
-    float horizon_amount = pow(1.0 - clamp(abs(dot(normal, view_dir)), 0.0, 1.0), horizon_falloff);
-    float sun_wrap = pow(clamp(dot(normalize(-sun_direction), normal), 0.0, 1.0), 4.0);
-    vec3 base_color = mix(zenith_color.rgb, horizon_color.rgb, horizon_amount);
-    vec3 final_color = mix(base_color, horizon_color.rgb, sun_wrap);
+    vec2 st = UV;
+    vec2 vignette_uv = (st - 0.5) * vec2(aspect_ratio, 1.0);
 
-    // Procedurally generate twinkling stars when the sun influence is low.
-    vec3 star_dir = normalize(world_position);
-    vec3 hash_position = fract(star_dir * 43758.5453);
-    float hash_value = fract(dot(hash_position, vec3(12.9898, 78.233, 37.719)) * 43758.5453);
-    float star_mask = step(1.0 - star_density, hash_value);
-    vec3 star_color = vec3(star_intensity * star_mask);
-    final_color += star_color;
+    float horizon_mask = smoothstep(horizon_height - horizon_softness, horizon_height + horizon_softness, st.y);
+    vec3 base_color = mix(horizon_color, zenith_color, horizon_mask);
 
-    ALBEDO = final_color;
-    ALPHA = clamp((horizon_amount + sun_wrap) * opacity, 0.0, 1.0);
+    float falloff = clamp(length(vignette_uv), 0.0, 1.0);
+    float vignette = mix(1.0, 1.0 - falloff, vignette_strength);
+    base_color *= vignette * horizon_brightness;
+
+    vec3 star_color = get_stars(UV);
+    vec3 color = base_color + (star_color - background_color) * star_contribution;
+
+    ALBEDO = vec3(0.0);
+    EMISSION = color;
+    ALPHA = 1.0;
 }

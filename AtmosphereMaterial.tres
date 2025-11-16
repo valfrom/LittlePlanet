@@ -4,7 +4,22 @@
 
 [resource]
 shader = ExtResource("1_g4ehh")
-shader_parameter/zenith_color = Color(0.05, 0.12, 0.35, 1)
-shader_parameter/horizon_color = Color(0.5, 0.3, 0.1, 1)
-shader_parameter/horizon_falloff = 1.6
-shader_parameter/opacity = 0.85
+shader_parameter/zenith_color = Color(0.02, 0.04, 0.12, 1)
+shader_parameter/horizon_color = Color(0.15, 0.25, 0.4, 1)
+shader_parameter/horizon_height = 0.45
+shader_parameter/horizon_softness = 0.25
+shader_parameter/horizon_brightness = 1.0
+shader_parameter/vignette_strength = 0.35
+shader_parameter/star_contribution = 1.0
+shader_parameter/background_color = Color(0.02, 0.04, 0.12, 1)
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/density = 1.3
+shader_parameter/layer_parascale = 4
+shader_parameter/star_speed = Vector2(0, 0)
+shader_parameter/star_wave = Vector2(0, 0)
+shader_parameter/star_size = 3.0
+shader_parameter/star_rotate_speed = 0.5
+shader_parameter/twinkle_effect = 0.6
+shader_parameter/twinkle_speed = 0.3
+shader_parameter/pixelate_enabled = false
+shader_parameter/pixelate_count = 1000.0
