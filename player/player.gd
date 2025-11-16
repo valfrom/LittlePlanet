@@ -164,13 +164,16 @@ func apply_input(delta: float) -> void:
         velocity.x = h_velocity.x
         velocity.z = h_velocity.z
 
-        if planet:
-                var gravity_dir: Vector3 = (planet.global_position - global_position).normalized()
-                velocity += gravity_dir * gravity_strength * delta
-                set_up_direction(-gravity_dir)
-        else:
-                velocity += get_gravity() * delta
-                set_up_direction(Vector3.UP)
+	var gravity_vector: Vector3 = get_gravity()
+	var gravity_direction: Vector3 = gravity_vector.normalized()
+	var gravity_magnitude: float = gravity_vector.length()
+	if planet:
+		var toward_planet: Vector3 = planet.global_transform.origin - global_transform.origin
+		if toward_planet.length() > 0.0:
+			gravity_direction = toward_planet.normalized()
+		gravity_magnitude = gravity_strength
+	velocity += gravity_direction * gravity_magnitude * delta
+	set_up_direction(-gravity_direction)
 
         set_velocity(velocity)
         move_and_slide()
