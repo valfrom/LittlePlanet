@@ -1,0 +1,8 @@
+[gd_resource type="ArrayMesh" load_steps=2 format=3 uid="uid://dl4o5i1eo470n"]
+
+[ext_resource type="Script" path="res://meshes/GrassTuftMesh.gd" id="1_2pv20"]
+
+[resource]
+script = ExtResource("1_2pv20")
+blade_height = 0.6
+blade_width = 0.2

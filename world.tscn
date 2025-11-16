@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=23 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://mhvgxe13x8ng" path="res://Player.gd" id="2_fj7yv"]
@@ -8,6 +8,8 @@
 [ext_resource type="Material" path="res://AtmosphereMaterial.tres" id="6_fx2th"]
 [ext_resource type="Script" uid="uid://xnafrinm1vra" path="res://AtmosphereController.gd" id="7_28gmi"]
 [ext_resource type="Script" uid="uid://dw6crtvryu3dy" path="res://Constellation.gd" id="8_26mqm"]
+[ext_resource type="Mesh" path="res://meshes/GrassTuft.tres" id="9_uleg6"]
+[ext_resource type="Script" path="res://GrassPopulator.gd" id="10_f536a"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
 background_mode = 1
@@ -64,6 +66,17 @@ compositor = SubResource("Compositor_036b0")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
 material_override = ExtResource("1_f3sb7")
 mesh = SubResource("SphereMesh_tlwt5")
+
+[node name="Grass" type="MultiMeshInstance3D" parent="Planet" node_paths=PackedStringArray("planet", "observer")]
+script = ExtResource("10_f536a")
+planet = NodePath("..")
+observer = NodePath("../Player/Camera3D")
+tuft_mesh = ExtResource("9_uleg6")
+planet_radius = 100.0
+density = 6000
+seed = 4810
+scale_range = Vector2(0.7, 1.35)
+cull_distance = 220.0
 
 [node name="Atmosphere" type="MeshInstance3D" parent="Planet" node_paths=PackedStringArray("player", "planet", "moon_light", "moon_mesh", "world_environment")]
 material_override = ExtResource("6_fx2th")
