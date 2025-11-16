@@ -105,10 +105,10 @@ void vertex()
     v_bend_amount = clamp(length(vec2(sway, directional_sway)), 0.0, 1.0);
 }
 
-vec3 compute_bent_normal(float bend_amount)
+vec3 compute_bent_normal(vec3 base_normal, float bend_amount)
 {
     vec3 bend = normalize(vec3(0.3, 1.0, 0.5));
-    return normalize(NORMAL + bend * bend_amount * 0.6);
+    return normalize(base_normal + bend * bend_amount * 0.6);
 }
 
 void fragment()
@@ -126,7 +126,7 @@ void fragment()
     vec3 grass_color = mix(base_mix, tip_grass_tint, tip_factor);
     grass_color = mix(grass_color, highlight_tint, pow(tip_factor, 4.0) * 0.35);
 
-    vec3 bent_normal = compute_bent_normal(v_bend_amount);
+    vec3 bent_normal = compute_bent_normal(NORMAL, v_bend_amount);
     vec3 light_dir = normalize(sun_direction);
     vec3 view_dir = normalize(-VIEW);
 
