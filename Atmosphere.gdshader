@@ -126,8 +126,10 @@ void fragment() {
     base_color *= vignette * horizon_brightness;
 
     vec3 star_color = get_stars(UV);
+    vec3 normal_dir = normalize(NORMAL);
+    float sky_position = normal_dir.y * 0.5 + 0.5;
     float star_threshold = clamp(horizon_height + horizon_softness, 0.0, 1.0);
-    float star_mask = smoothstep(star_threshold, 1.0, st.y);
+    float star_mask = star_threshold >= 0.999 ? 1.0 : smoothstep(star_threshold, 1.0, sky_position);
     vec3 color = base_color + star_mask * (star_color - background_color) * star_contribution;
 
     ALBEDO = vec3(0.0);
