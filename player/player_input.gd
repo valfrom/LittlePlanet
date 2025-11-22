@@ -46,9 +46,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	motion = Vector2(
-			Input.get_action_strength(&"move_right") - Input.get_action_strength(&"move_left"),
-			Input.get_action_strength(&"move_back") - Input.get_action_strength(&"move_forward"))
+        motion = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	var camera_move := Vector2(
 			Input.get_action_strength(&"view_right") - Input.get_action_strength(&"view_left"),
 			Input.get_action_strength(&"view_up") - Input.get_action_strength(&"view_down"))
