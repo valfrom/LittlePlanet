@@ -88,6 +88,7 @@ func animate(anim: int, _delta: float) -> void:
 func apply_input(delta: float) -> void:
     var up_dir: Vector3 = _get_up_direction()
     set_up_direction(up_dir)
+    player_input.align_camera_to_up(up_dir)
 
     motion = motion.lerp(player_input.motion, MOTION_INTERPOLATE_SPEED * delta)
 
