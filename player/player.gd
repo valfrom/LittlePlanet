@@ -171,10 +171,6 @@ func apply_input(delta: float) -> void:
 
 	player_model.global_transform.basis = orientation.basis
 
-	# If we're below -40, respawn (teleport to the initial position).
-	if transform.origin.y < -40.0:
-		transform.origin = initial_position
-
 
 @rpc("call_local")
 func jump() -> void:
