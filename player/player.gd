@@ -163,6 +163,25 @@ func apply_input(delta: float) -> void:
     # Apply root motion to orientation.
     orientation *= root_motion
 
+    orientation = orientation.orthonormalized()
+
+    var forward_dir: Vector3 = _project_on_plane(-orientation.basis.z, up_dir)
+    if forward_dir.length_squared() < 0.0001:
+        forward_dir = _project_on_plane(-global_transform.basis.z, up_dir)
+    forward_dir = forward_dir.normalized()
+    var right_dir: Vector3 = up_dir.cross(forward_dir).normalized()
+    var aligned_basis := Basis(right_dir, up_dir, -forward_dir)
+
+    global_transform.basis = aligned_basis
+
+    var camera_forward: Vector3 = _project_on_plane(-player_input.camera_base.global_transform.basis.z, up_dir)
+    if camera_forward.length_squared() < 0.0001:
+        camera_forward = forward_dir
+    else:
+        camera_forward = camera_forward.normalized()
+    var camera_right: Vector3 = up_dir.cross(camera_forward).normalized()
+    player_input.camera_base.global_transform.basis = Basis(camera_right, up_dir, -camera_forward)
+
     var h_velocity: Vector3 = _project_on_plane(orientation.origin, up_dir) / delta
     velocity.x = h_velocity.x
     velocity.z = h_velocity.z
@@ -171,7 +190,6 @@ func apply_input(delta: float) -> void:
     move_and_slide()
 
     orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
-    orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
     player_model.global_transform.basis = orientation.basis
 
