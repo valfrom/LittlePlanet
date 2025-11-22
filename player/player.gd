@@ -36,11 +36,13 @@ var motion := Vector2()
 @onready var sound_effect_shoot: AudioStreamPlayer = sound_effects.get_node(^"Shoot")
 
 @export var player_id: int = 1:
-	set(value):
-		player_id = value
-		$InputSynchronizer.set_multiplayer_authority(value)
+        set(value):
+                player_id = value
+                $InputSynchronizer.set_multiplayer_authority(value)
 
 @export var current_animation := Animations.WALK
+@export var planet_center: Node3D
+@export var gravity_strength: float = 40.0
 
 
 func _ready() -> void:
@@ -84,102 +86,125 @@ func animate(anim: int, _delta: float) -> void:
 
 
 func apply_input(delta: float) -> void:
-	motion = motion.lerp(player_input.motion, MOTION_INTERPOLATE_SPEED * delta)
+        var up_dir: Vector3 = Vector3.UP
+        if planet_center != null:
+                up_dir = (global_transform.origin - planet_center.global_transform.origin).normalized()
 
-	var camera_basis: Basis = player_input.get_camera_rotation_basis()
-	var camera_z: Vector3 = camera_basis.z
-	var camera_x: Vector3 = camera_basis.x
+        _align_orientation_with_up(up_dir)
 
-	camera_z.y = 0
-	camera_z = camera_z.normalized()
-	camera_x.y = 0
-	camera_x = camera_x.normalized()
+        motion = motion.lerp(player_input.motion, MOTION_INTERPOLATE_SPEED * delta)
 
-	# Jump/in-air logic.
-	airborne_time += delta
-	if is_on_floor():
-		if airborne_time > 0.5:
-			land.rpc()
-		airborne_time = 0
+        var camera_basis: Basis = player_input.get_camera_rotation_basis()
+        var camera_z: Vector3 = camera_basis.z
+        var camera_x: Vector3 = camera_basis.x
 
-	var on_air: bool = airborne_time > MIN_AIRBORNE_TIME
+        camera_z = (camera_z - up_dir * camera_z.dot(up_dir)).normalized()
+        camera_x = (camera_x - up_dir * camera_x.dot(up_dir)).normalized()
 
-	if not on_air and player_input.jumping:
-		velocity.y = JUMP_SPEED
-		on_air = true
-		# Increase airborne time so next frame on_air is still true
-		airborne_time = MIN_AIRBORNE_TIME
-		jump.rpc()
+        # Jump/in-air logic.
+        airborne_time += delta
+        if is_on_floor():
+                if airborne_time > 0.5:
+                        land.rpc()
+                airborne_time = 0
 
-	player_input.jumping = false
+        var on_air: bool = airborne_time > MIN_AIRBORNE_TIME
 
-	if on_air:
-		if velocity.y > 0:
-			animate(Animations.JUMP_UP, delta)
-		else:
-			animate(Animations.JUMP_DOWN, delta)
-	elif player_input.aiming:
-		# Convert orientation to quaternions for interpolating rotation.
-		var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
-		var q_to: Quaternion = player_input.get_camera_base_quaternion()
-		# Interpolate current rotation with desired one.
-		orientation.basis = Basis(q_from.slerp(q_to, delta * ROTATION_INTERPOLATE_SPEED))
+        if not on_air and player_input.jumping:
+                var tangential_velocity: Vector3 = velocity - up_dir * velocity.dot(up_dir)
+                velocity = tangential_velocity + up_dir * JUMP_SPEED
+                on_air = true
+                # Increase airborne time so next frame on_air is still true
+                airborne_time = MIN_AIRBORNE_TIME
+                jump.rpc()
 
-		# Change state to strafe.
-		animate(Animations.STRAFE, delta)
+        player_input.jumping = false
 
-		root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
+        var vertical_speed: float = velocity.dot(up_dir)
 
-		if player_input.shooting and fire_cooldown.time_left == 0:
-			var shoot_origin: Vector3 = shoot_from.global_transform.origin
-			var shoot_dir: Vector3 = (player_input.shoot_target - shoot_origin).normalized()
+        if on_air:
+                if vertical_speed > 0:
+                        animate(Animations.JUMP_UP, delta)
+                else:
+                        animate(Animations.JUMP_DOWN, delta)
+        elif player_input.aiming:
+                # Convert orientation to quaternions for interpolating rotation.
+                var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+                var q_to: Quaternion = player_input.get_camera_base_quaternion()
+                # Interpolate current rotation with desired one.
+                orientation.basis = Basis(q_from.slerp(q_to, delta * ROTATION_INTERPOLATE_SPEED))
 
-			var bullet: CharacterBody3D = preload("res://player/bullet/bullet.tscn").instantiate()
-			get_parent().add_child(bullet, true)
-			bullet.global_transform.origin = shoot_origin
-			# If we don't rotate the bullets there is no useful way to control the particles ..
-			bullet.look_at(shoot_origin + shoot_dir)
-			bullet.add_collision_exception_with(self)
-			shoot.rpc()
+                # Change state to strafe.
+                animate(Animations.STRAFE, delta)
 
-	else: # Not in air or aiming, idle.
-		# Convert orientation to quaternions for interpolating rotation.
-		var target: Vector3 = camera_x * motion.x + camera_z * motion.y
-		if target.length() > 0.001:
-			var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
-			var q_to: Quaternion = Basis.looking_at(target).get_rotation_quaternion()
-			# Interpolate current rotation with desired one.
-			orientation.basis = Basis(q_from.slerp(q_to, delta * ROTATION_INTERPOLATE_SPEED))
+                root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
 
-		animate(Animations.WALK, delta)
+                if player_input.shooting and fire_cooldown.time_left == 0:
+                        var shoot_origin: Vector3 = shoot_from.global_transform.origin
+                        var shoot_dir: Vector3 = (player_input.shoot_target - shoot_origin).normalized()
 
-		root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
+                        var bullet: CharacterBody3D = preload("res://player/bullet/bullet.tscn").instantiate()
+                        get_parent().add_child(bullet, true)
+                        bullet.global_transform.origin = shoot_origin
+                        # If we don't rotate the bullets there is no useful way to control the particles ..
+                        bullet.look_at(shoot_origin + shoot_dir)
+                        bullet.add_collision_exception_with(self)
+                        shoot.rpc()
 
-	# Apply root motion to orientation.
-	orientation *= root_motion
+        else: # Not in air or aiming, idle.
+                # Convert orientation to quaternions for interpolating rotation.
+                var target: Vector3 = camera_x * motion.x + camera_z * motion.y
+                if target.length() > 0.001:
+                        var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+                        var q_to: Quaternion = Basis.looking_at(target, up_dir).get_rotation_quaternion()
+                        # Interpolate current rotation with desired one.
+                        orientation.basis = Basis(q_from.slerp(q_to, delta * ROTATION_INTERPOLATE_SPEED))
 
-	var h_velocity: Vector3 = orientation.origin / delta
-	velocity.x = h_velocity.x
-	velocity.z = h_velocity.z
-	velocity += get_gravity() * delta
-	set_velocity(velocity)
-	set_up_direction(Vector3.UP)
-	move_and_slide()
+                animate(Animations.WALK, delta)
 
-	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
-	orientation = orientation.orthonormalized() # Orthonormalize orientation.
+                root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
 
-	player_model.global_transform.basis = orientation.basis
+        # Apply root motion to orientation.
+        orientation *= root_motion
+        _align_orientation_with_up(up_dir)
 
-	# If we're below -40, respawn (teleport to the initial position).
-	if transform.origin.y < -40.0:
-		transform.origin = initial_position
+        var h_velocity: Vector3 = orientation.origin / delta
+        velocity.x = h_velocity.x
+        velocity.z = h_velocity.z
+        velocity += -up_dir * gravity_strength * delta
+        set_velocity(velocity)
+        set_up_direction(up_dir)
+        move_and_slide()
 
+        orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
+        orientation = orientation.orthonormalized() # Orthonormalize orientation.
+
+        player_model.global_transform.basis = orientation.basis
+
+        # If we're below -40, respawn (teleport to the initial position).
+        if transform.origin.y < -40.0:
+                transform.origin = initial_position
+
+func _align_orientation_with_up(up_dir: Vector3) -> void:
+        var forward_dir: Vector3 = -orientation.basis.z
+        if forward_dir.length_squared() < 0.0001:
+                forward_dir = orientation.basis.x.cross(up_dir)
+                if forward_dir.length_squared() < 0.0001:
+                        forward_dir = up_dir.cross(Vector3.FORWARD)
+
+        forward_dir = (forward_dir - up_dir * forward_dir.dot(up_dir)).normalized()
+
+        var new_basis := Basis()
+        new_basis.y = up_dir
+        new_basis.x = up_dir.cross(-forward_dir).normalized()
+        new_basis.z = -new_basis.x.cross(new_basis.y).normalized()
+
+        orientation.basis = new_basis.orthonormalized()
 
 @rpc("call_local")
 func jump() -> void:
-	animate(Animations.JUMP_UP, 0.0)
-	sound_effect_jump.play()
+        animate(Animations.JUMP_UP, 0.0)
+        sound_effect_jump.play()
 
 
 @rpc("call_local")
