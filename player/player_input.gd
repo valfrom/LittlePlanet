@@ -144,7 +144,10 @@ func align_camera_to_up(up_dir: Vector3) -> void:
         if dot > 0.9999:
             return
 
-        axis = current_up.orthogonal().normalized()
+        axis = current_up.cross(Vector3.FORWARD)
+        if axis.length_squared() < 0.0001:
+            axis = current_up.cross(Vector3.RIGHT)
+        axis = axis.normalized()
         axis_length = 1.0
 
     var angle: float = acos(dot)
