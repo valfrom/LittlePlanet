@@ -3,10 +3,10 @@ extends CharacterBody3D
 
 
 enum Animations {
-	JUMP_UP,
-	JUMP_DOWN,
-	STRAFE,
-	WALK,
+        JUMP_UP,
+        JUMP_DOWN,
+        STRAFE,
+        WALK,
 }
 
 const MOTION_INTERPOLATE_SPEED: float = 10.0
@@ -46,43 +46,43 @@ var motion := Vector2()
 
 
 func _ready() -> void:
-	# Pre-initialize orientation transform.
-	orientation = player_model.global_transform
-	orientation.origin = Vector3()
-	if not multiplayer.is_server():
-		set_process(false)
+        # Pre-initialize orientation transform.
+        orientation = player_model.global_transform
+        orientation.origin = Vector3()
+        if not multiplayer.is_server():
+                set_process(false)
 
 
 func _physics_process(delta: float) -> void:
-	if multiplayer.is_server():
-		apply_input(delta)
-	else:
-		animate(current_animation, delta)
+        if multiplayer.is_server():
+                apply_input(delta)
+        else:
+                animate(current_animation, delta)
 
 
 func animate(anim: int, _delta: float) -> void:
-	current_animation = anim as Animations
+        current_animation = anim as Animations
 
-	if anim == Animations.JUMP_UP:
-		animation_tree["parameters/state/transition_request"] = "jump_up"
+        if anim == Animations.JUMP_UP:
+                animation_tree["parameters/state/transition_request"] = "jump_up"
 
-	elif anim == Animations.JUMP_DOWN:
-		animation_tree["parameters/state/transition_request"] = "jump_down"
+        elif anim == Animations.JUMP_DOWN:
+                animation_tree["parameters/state/transition_request"] = "jump_down"
 
-	elif anim == Animations.STRAFE:
-		animation_tree["parameters/state/transition_request"] = "strafe"
-		# Change aim according to camera rotation.
-		animation_tree["parameters/aim/add_amount"] = player_input.get_aim_rotation()
-		# The animation's forward/backward axis is reversed.
-		animation_tree["parameters/strafe/blend_position"] = Vector2(motion.x, -motion.y)
+        elif anim == Animations.STRAFE:
+                animation_tree["parameters/state/transition_request"] = "strafe"
+                # Change aim according to camera rotation.
+                animation_tree["parameters/aim/add_amount"] = player_input.get_aim_rotation()
+                # The animation's forward/backward axis is reversed.
+                animation_tree["parameters/strafe/blend_position"] = Vector2(motion.x, -motion.y)
 
-	elif anim == Animations.WALK:
-		# Aim to zero (no aiming while walking).
-		animation_tree["parameters/aim/add_amount"] = 0
-		# Change state to walk.
-		animation_tree["parameters/state/transition_request"] = "walk"
-		# Blend position for walk speed based checked motion.
-		animation_tree["parameters/walk/blend_position"] = Vector2(motion.length(), 0)
+        elif anim == Animations.WALK:
+                # Aim to zero (no aiming while walking).
+                animation_tree["parameters/aim/add_amount"] = 0
+                # Change state to walk.
+                animation_tree["parameters/state/transition_request"] = "walk"
+                # Blend position for walk speed based checked motion.
+                animation_tree["parameters/walk/blend_position"] = Vector2(motion.length(), 0)
 
 
 func apply_input(delta: float) -> void:
@@ -209,28 +209,28 @@ func jump() -> void:
 
 @rpc("call_local")
 func land() -> void:
-	animate(Animations.JUMP_DOWN, 0.0)
-	sound_effect_land.play()
+        animate(Animations.JUMP_DOWN, 0.0)
+        sound_effect_land.play()
 
 
 @rpc("call_local")
 func shoot() -> void:
-	var shoot_particle = $PlayerModel/Robot_Skeleton/Skeleton3D/GunBone/ShootFrom/ShootParticle
-	shoot_particle.restart()
-	shoot_particle.emitting = true
-	var muzzle_particle = $PlayerModel/Robot_Skeleton/Skeleton3D/GunBone/ShootFrom/MuzzleFlash
-	muzzle_particle.restart()
-	muzzle_particle.emitting = true
-	fire_cooldown.start()
-	sound_effect_shoot.play()
-	add_camera_shake_trauma(0.35)
+        var shoot_particle = $PlayerModel/Robot_Skeleton/Skeleton3D/GunBone/ShootFrom/ShootParticle
+        shoot_particle.restart()
+        shoot_particle.emitting = true
+        var muzzle_particle = $PlayerModel/Robot_Skeleton/Skeleton3D/GunBone/ShootFrom/MuzzleFlash
+        muzzle_particle.restart()
+        muzzle_particle.emitting = true
+        fire_cooldown.start()
+        sound_effect_shoot.play()
+        add_camera_shake_trauma(0.35)
 
 
 @rpc("call_local")
 func hit() -> void:
-	add_camera_shake_trauma(0.75)
+        add_camera_shake_trauma(0.75)
 
 
 @rpc("call_local")
 func add_camera_shake_trauma(amount: float) -> void:
-	player_input.camera_camera.add_trauma(amount)
+        player_input.camera_camera.add_trauma(amount)
