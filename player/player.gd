@@ -200,10 +200,18 @@ func update_velocity_and_move(delta: float):
 	set_up_direction(up_dir)
 	move_and_slide()
 
-	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
-	orientation = orientation.orthonormalized() # Orthonormalize orientation.
+        var up_dir: Vector3 = global_transform.basis.y
+        var forward_dir: Vector3 = (-orientation.basis.z).project_on_plane(up_dir)
+        if forward_dir.length_squared() < 0.000001:
+                forward_dir = -global_transform.basis.z
+        else:
+                forward_dir = forward_dir.normalized()
 
-	player_model.global_transform.basis = orientation.basis * global_transform.basis
+        orientation.basis = Basis.looking_at(forward_dir, up_dir)
+        orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
+        orientation = orientation.orthonormalized() # Orthonormalize orientation.
+
+        player_model.global_transform.basis = orientation.basis * global_transform.basis
 
 
 func _get_gravity() -> Vector3:
