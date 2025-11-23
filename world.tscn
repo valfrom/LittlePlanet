@@ -79,8 +79,9 @@ dusk_horizon_color = Color(0.38550982, 0.12536559, 7.219613e-08, 1)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
 shape = SubResource("SphereShape3D_gv5m4")
 
-[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("planet", "moon")]
+[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("world", "planet", "moon")]
 script = ExtResource("4_aqk2v")
+world = NodePath("..")
 planet = NodePath("../Planet")
 moon = NodePath("../Moon")
 

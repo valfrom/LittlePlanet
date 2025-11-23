@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@export var player: Node3D
+@export var world: World
 @export var planet: Node3D
 @export var moon: Node3D
 
@@ -12,6 +12,8 @@ func _process(delta: float) -> void:
 	var lat_deg := 0.0
 	var lon_deg := 0.0
 	var moon_pos_text := "Moon: (n/a)"
+	
+	var player = world.player
 
 	if player != null and planet != null:
 		var local_pos := planet.to_local(player.global_position)

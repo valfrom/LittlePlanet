@@ -1,3 +1,5 @@
+
+class_name World
 extends Node3D
 
 @export var player_scene: PackedScene
