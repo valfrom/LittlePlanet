@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cjds608jy4xuv"]
+[gd_scene load_steps=21 format=3 uid="uid://cjds608jy4xuv"]
 
 [ext_resource type="Material" uid="uid://cdmhn2hjag56n" path="res://PlanetCurvature.tres" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://6psijwnfi2pf" path="res://World.gd" id="1_pkg7o"]
@@ -10,8 +10,23 @@
 [ext_resource type="Script" uid="uid://dw6crtvryu3dy" path="res://Constellation.gd" id="8_26mqm"]
 
 [sub_resource type="Environment" id="Environment_tlwt5"]
-background_mode = 1
+background_mode = 2
+sky = SubResource("Sky_environment")
+ambient_light_source = 2
+ambient_light_energy = 1.0
+ambient_light_sky_contribution = 1.0
 background_color = Color(0.08, 0.04, 0.1, 1)
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_environment"]
+rayleigh_coefficient = 1.2
+rayleigh_color = Color(0.6, 0.78, 1, 1)
+mie_coefficient = 0.25
+mie_eccentricity = 0.8
+ground_bottom_color = Color(0.07, 0.05, 0.09, 1)
+ground_horizon_color = Color(0.18, 0.11, 0.2, 1)
+
+[sub_resource type="Sky" id="Sky_environment"]
+sky_material = SubResource("PhysicalSkyMaterial_environment")
 
 [sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_aqk2v"]
 
