@@ -200,8 +200,15 @@ func update_velocity_and_move(delta: float):
 	set_up_direction(up_dir)
 	move_and_slide()
 
-	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
-	orientation = orientation.orthonormalized() # Orthonormalize orientation.
+        orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
+
+        # Align orientation so that the up direction always matches the planet's up direction.
+        var orientation_forward: Vector3 = -orientation.basis.z
+        orientation_forward = (orientation_forward - up_dir * orientation_forward.dot(up_dir)).normalized()
+        var orientation_right: Vector3 = up_dir.cross(orientation_forward).normalized()
+        orientation.basis = Basis(orientation_right, up_dir, -orientation_forward)
+
+        orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
 	player_model.global_transform.basis = orientation.basis * global_transform.basis
 
