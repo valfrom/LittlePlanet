@@ -1,4 +1,4 @@
-class_name Player
+class_name Player2
 extends CharacterBody3D
 
 
@@ -169,7 +169,7 @@ func update_velocity_and_move(delta: float):
 	global_transform.basis = basis
 	
 	var gravity_strength: float = 10.0
-	var move_speed: float = 10.0
+	var move_speed: float = 3.0
 	
 	var gravity_vec := -up_dir * gravity_strength
 	velocity += gravity_vec * delta
@@ -205,7 +205,7 @@ func update_velocity_and_move(delta: float):
 	#orientation.basis = basis
 	orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
-	player_model.global_transform.basis = basis
+	player_model.global_transform.basis = orientation.basis * global_transform.basis
 
 
 func _get_gravity() -> Vector3:
