@@ -103,7 +103,16 @@ func apply_input(delta: float) -> void:
 		airborne_time = 0
 
 	var on_air: bool = airborne_time > MIN_AIRBORNE_TIME
-	
+
+	if not on_air and player_input.jumping:
+		velocity.y = JUMP_SPEED
+		on_air = true
+		# Increase airborne time so next frame on_air is still true
+		airborne_time = MIN_AIRBORNE_TIME
+		jump.rpc()
+
+	player_input.jumping = false
+
 	if on_air:
 		if velocity.y > 0:
 			animate(Animations.JUMP_UP, delta)
@@ -149,66 +158,19 @@ func apply_input(delta: float) -> void:
 	# Apply root motion to orientation.
 	orientation *= root_motion
 
-	update_velocity_and_move(delta)
-		
-	# If we're too far from center, respawn (teleport to the initial position).
-	if transform.origin.length() > 130.0:
-		transform.origin = initial_position
-
-
-func update_velocity_and_move(delta: float):
-	var input_dir: Vector2 = Vector2(-orientation.origin.x / delta, -orientation.origin.z / delta)
-	
-	var up_dir := (global_position - Vector3.ZERO).normalized()
-#
-	var basis := global_transform.basis
-	basis.y = up_dir
-	basis.x = up_dir.cross(-basis.z).normalized()
-	basis.z = -basis.x.cross(basis.y).normalized()
-	global_transform.basis = basis
-	
-	var gravity_strength: float = 10.0
-	var move_speed: float = 3.0
-	
-	var gravity_vec := -up_dir * gravity_strength
-	velocity += gravity_vec * delta
-#
-	var forward := -global_transform.basis.z
-	forward = (forward - up_dir * forward.dot(up_dir)).normalized()
-	var right := up_dir.cross(forward).normalized()
-#
-	var move_vec := Vector3.ZERO
-	if input_dir != Vector2.ZERO:
-		move_vec = (forward * input_dir.y + right * input_dir.x).normalized() * move_speed
-		
-	var radial := velocity.project(-up_dir)
-	var tangential := move_vec
-	velocity = tangential + radial
-	
-	var on_air: bool = airborne_time > MIN_AIRBORNE_TIME
-	
-	if not on_air and player_input.jumping:
-		velocity += up_dir * JUMP_SPEED
-		on_air = true
-		# Increase airborne time so next frame on_air is still true
-		airborne_time = MIN_AIRBORNE_TIME
-		jump.rpc()
-
-	player_input.jumping = false
-	
+	var h_velocity: Vector3 = orientation.origin / delta
+	velocity.x = h_velocity.x
+	velocity.z = h_velocity.z
+	velocity += get_gravity() * delta
 	set_velocity(velocity)
-	set_up_direction(up_dir)
+	set_up_direction(Vector3.UP)
 	move_and_slide()
 
 	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
 	orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
-	player_model.global_transform.basis = orientation.basis * global_transform.basis
+	player_model.global_transform.basis = orientation.basis
 
-
-func _get_gravity() -> Vector3:
-	var dir_to_center := (Vector3.ZERO - transform.origin).normalized()
-	return dir_to_center
 
 @rpc("call_local")
 func jump() -> void:
