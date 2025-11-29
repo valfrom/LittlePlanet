@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://bh2xslg8aobqg"]
+
+[ext_resource type="PackedScene" uid="uid://cs1k22tdf04k4" path="res://player/player.tscn" id="1_6gduy"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_sy64l"]
+radius = 100.0
+height = 200.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6gduy"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sy64l"]
+noise = SubResource("FastNoiseLite_6gduy")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_64fpe"]
+albedo_color = Color(0, 1, 0, 1)
+albedo_texture = SubResource("NoiseTexture2D_sy64l")
+uv1_scale = Vector3(0.05, 0.05, 0.05)
+uv1_triplanar = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6gduy"]
+radius = 100.0
+
+[sub_resource type="Environment" id="Environment_6gduy"]
+ambient_light_source = 2
+ambient_light_color = Color(0.14791021, 0.22792521, 0.5248861, 1)
+ambient_light_energy = 0.5
+
+[node name="World" type="Node3D"]
+
+[node name="Planet" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
+mesh = SubResource("SphereMesh_sy64l")
+surface_material_override/0 = SubResource("StandardMaterial3D_64fpe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Planet"]
+shape = SubResource("SphereShape3D_6gduy")
+
+[node name="Player" parent="." instance=ExtResource("1_6gduy")]
+transform = Transform3D(0.95766073, 0.0622331, -0.28109223, -0.04587977, 0.99686927, 0.06439527, 0.28421983, -0.048772402, 0.95751804, 19.65843, 110.23864, -4.7016144)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6gduy")
